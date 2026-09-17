@@ -4,7 +4,9 @@
 
 You inherit a server. Something runs at 2 a.m., touches a database, and nobody knows what or why. `orphanmap` reads the machine (never writes to it) and produces a single dependency graph of SQL objects, Agent jobs, scheduled tasks, and the connection strings buried in `.bat`/`.ps1`/`.dtsx`/`.rdl`/`.xlsx`/`.accdb` files — so you can trace "this scheduled job → this batch file → this server → this table" and check every hop against the citation the tool recorded.
 
-**Example output:** [`examples/example_graph.dot`](examples/example_graph.dot) is the fixture dependency graph (sanitized). Render it to an image with Graphviz — `dot -Tsvg examples/example_graph.dot -o graph.svg` — or run the collector with `--render`. Graphviz is needed only for the picture; the collector itself does not require it.
+![orphanmap example dependency graph](examples/example_graph.svg)
+
+*Example output (sanitized fixture): a scheduled job → batch file → server → database → the stored proc it runs, alongside an SSRS report and an Excel workbook that hit the same objects. Source: [`examples/example_graph.dot`](examples/example_graph.dot). Regenerate with `--render`, or `dot -Tsvg examples/example_graph.dot -o graph.svg`. Graphviz is needed only for the picture; the collector itself is not.*
 
 ## Read-only, by design
 

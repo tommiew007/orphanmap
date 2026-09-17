@@ -1,5 +1,5 @@
 digraph collector {
-  graph [rankdir=LR, fontname="Segoe UI", labelloc=t, label="Orphaned-system dependency graph (example)", fontsize=18, bgcolor="white", nodesep=0.35, ranksep=0.8];
+  graph [rankdir=LR, fontname="Segoe UI", labelloc=t, label="orphanmap — example dependency graph (fixture)", fontsize=18, bgcolor="white", nodesep=0.35, ranksep=0.8];
   node [fontname="Segoe UI", fontsize=10, style="filled,rounded"];
   edge [fontname="Segoe UI", fontsize=8, color="#7f8c8d"];
   "server:SQLHOST01" [label="SQLHOST01\\n(server)", shape=box3d, fillcolor="#2c3e50", fontcolor="#ffffff"];
