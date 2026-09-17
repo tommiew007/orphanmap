@@ -1,8 +1,8 @@
-# orphan-map
+# orphanmap
 
 **A read-only collector that maps what a departed developer left behind on a Windows/SQL Server box — into one JSON graph where every edge cites its source.**
 
-You inherit a server. Something runs at 2 a.m., touches a database, and nobody knows what or why. `orphan-map` reads the machine (never writes to it) and produces a single dependency graph of SQL objects, Agent jobs, scheduled tasks, and the connection strings buried in `.bat`/`.ps1`/`.dtsx`/`.rdl`/`.xlsx`/`.accdb` files — so you can trace "this scheduled job → this batch file → this server → this table" and check every hop against the citation the tool recorded.
+You inherit a server. Something runs at 2 a.m., touches a database, and nobody knows what or why. `orphanmap` reads the machine (never writes to it) and produces a single dependency graph of SQL objects, Agent jobs, scheduled tasks, and the connection strings buried in `.bat`/`.ps1`/`.dtsx`/`.rdl`/`.xlsx`/`.accdb` files — so you can trace "this scheduled job → this batch file → this server → this table" and check every hop against the citation the tool recorded.
 
 ![example graph](examples/example_graph.svg)
 
