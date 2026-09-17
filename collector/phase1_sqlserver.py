@@ -57,13 +57,62 @@ class Edge:
     source: Dict[str, Any]  # citation: where this edge was observed
 
 
+# ----------------------------------------------------------------------------
+# Credential redaction. We never store a password in the graph. Applied centrally
+# to every citation text and every sensitive node attribute, so all three phases
+# are covered. A node whose text carried a secret is flagged had_credential=true
+# so you still know a credential exists there without recording its value.
+# ----------------------------------------------------------------------------
+
+# Password=... / PWD=... inside a connection string (value up to ; " ' or newline)
+_PWD_RE = re.compile(r'(?i)\b(pwd|password|passwd)(\s*=\s*)([^;"\'\r\n]*)')
+# sqlcmd/osql password flag: -P value or -Pvalue (case-sensitive uppercase P)
+_PFLAG_RE = re.compile(r'(?<![\w])-P\s*("[^"]*"|\'[^\']*\'|\S+)')
+_REDACTED = "***REDACTED***"
+SENSITIVE_ATTR_KEYS = {"command", "arguments", "execute", "working_directory", "definition"}
+
+
+def mask_secrets(text: Optional[str]):
+    """Return (masked_text, had_credential). Idempotent; leaves already-redacted text."""
+    if not text:
+        return text, False
+    hit = False
+
+    def _pwd(m):
+        nonlocal hit
+        if m.group(3).strip() and _REDACTED not in m.group(3):
+            hit = True
+            return f"{m.group(1)}{m.group(2)}{_REDACTED}"
+        return m.group(0)
+
+    def _pflag(m):
+        nonlocal hit
+        if _REDACTED in m.group(1):
+            return m.group(0)
+        hit = True
+        return f"-P {_REDACTED}"
+
+    out = _PWD_RE.sub(_pwd, text)
+    out = _PFLAG_RE.sub(_pflag, out)
+    return out, hit
+
+
 class Graph:
     def __init__(self) -> None:
         self._nodes: Dict[str, Node] = {}
         self._edges: List[Edge] = []
         self._edge_keys: set = set()
+        self._cred_srcs: set = set()  # node ids whose citation text carried a secret
 
     def add_node(self, node_id: str, ntype: str, name: str, **attrs: Any) -> str:
+        # redact secrets out of sensitive string attributes before storing
+        cred = False
+        for k in list(attrs):
+            if k in SENSITIVE_ATTR_KEYS and isinstance(attrs[k], str):
+                attrs[k], h = mask_secrets(attrs[k])
+                cred = cred or h
+        if cred:
+            attrs["had_credential"] = True
         if node_id in self._nodes:
             # merge attrs (later info wins, but don't clobber with None)
             existing = self._nodes[node_id]
@@ -75,6 +124,13 @@ class Graph:
         return node_id
 
     def add_edge(self, src: str, dst: str, etype: str, source: Dict[str, Any]) -> None:
+        # redact secrets out of the citation text
+        if isinstance(source, dict) and isinstance(source.get("text"), str):
+            masked, hit = mask_secrets(source["text"])
+            if hit:
+                source = dict(source)
+                source["text"] = masked
+                self._cred_srcs.add(src)
         # de-dupe identical edges that carry the same citation
         key = (src, dst, etype, json.dumps(source, sort_keys=True, default=str))
         if key in self._edge_keys:
@@ -83,6 +139,9 @@ class Graph:
         self._edges.append(Edge(src=src, dst=dst, type=etype, source=source))
 
     def to_dict(self) -> Dict[str, Any]:
+        for nid in self._cred_srcs:
+            if nid in self._nodes:
+                self._nodes[nid].attrs["had_credential"] = True
         return {
             "nodes": [asdict(n) for n in self._nodes.values()],
             "edges": [asdict(e) for e in self._edges],
