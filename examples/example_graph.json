@@ -1,0 +1,706 @@
+{
+  "nodes": [
+    {
+      "id": "server:SQLHOST01",
+      "type": "server",
+      "name": "SQLHOST01",
+      "attrs": {
+        "product_version": "16.0.1000.6",
+        "edition": "Developer Edition (64-bit)"
+      }
+    },
+    {
+      "id": "db:OrphanTestDB",
+      "type": "database",
+      "name": "OrphanTestDB",
+      "attrs": {
+        "database_id": 5,
+        "state": "ONLINE",
+        "recovery_model": "FULL",
+        "create_date": "2026-09-17T08:54:16.383000",
+        "is_system": false
+      }
+    },
+    {
+      "id": "lnk:ARCHIVE-SQL",
+      "type": "linked_server",
+      "name": "ARCHIVE-SQL",
+      "attrs": {
+        "product": "SQL Server",
+        "provider": "SQLNCLI",
+        "data_source": "ARCHIVE-SQL"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.Customers",
+      "type": "table",
+      "name": "dbo.Customers",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "U",
+        "create_date": "2026-09-17T08:54:18.153000",
+        "modify_date": "2026-09-17T08:54:18.167000"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.fnOrderCount",
+      "type": "scalar_function",
+      "name": "dbo.fnOrderCount",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "FN",
+        "create_date": "2026-09-17T08:54:18.203000",
+        "modify_date": "2026-09-17T08:54:18.203000"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.Orders",
+      "type": "table",
+      "name": "dbo.Orders",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "U",
+        "create_date": "2026-09-17T08:54:18.163000",
+        "modify_date": "2026-09-17T08:54:18.163000"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "type": "procedure",
+      "name": "dbo.usp_CustomerSummary",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "P",
+        "create_date": "2026-09-17T08:54:18.207000",
+        "modify_date": "2026-09-17T08:54:18.207000"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.usp_PullLegacy",
+      "type": "procedure",
+      "name": "dbo.usp_PullLegacy",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "P",
+        "create_date": "2026-09-17T08:56:18.800000",
+        "modify_date": "2026-09-17T08:56:18.800000"
+      }
+    },
+    {
+      "id": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "type": "view",
+      "name": "dbo.vCustomerOrders",
+      "attrs": {
+        "database": "OrphanTestDB",
+        "sql_type": "V",
+        "create_date": "2026-09-17T08:54:18.197000",
+        "modify_date": "2026-09-17T08:54:18.197000"
+      }
+    },
+    {
+      "id": "job:OrphanTest_FileLoad",
+      "type": "agent_job",
+      "name": "OrphanTest_FileLoad",
+      "attrs": {
+        "enabled": true,
+        "description": "Runs the legacy nightly batch (test fixture).",
+        "date_created": "2026-09-17T09:24:32.730000"
+      }
+    },
+    {
+      "id": "step:OrphanTest_FileLoad#1",
+      "type": "agent_job_step",
+      "name": "OrphanTest_FileLoad / RunBatch",
+      "attrs": {
+        "subsystem": "CmdExec",
+        "database_name": null,
+        "command": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat"
+      }
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\nightly_load.bat",
+      "type": "file",
+      "name": "nightly_load.bat",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat"
+      }
+    },
+    {
+      "id": "job:OrphanTest_NightlyLoad",
+      "type": "agent_job",
+      "name": "OrphanTest_NightlyLoad",
+      "attrs": {
+        "enabled": true,
+        "description": "Nightly summary load (test fixture).",
+        "date_created": "2026-09-17T08:54:18.397000",
+        "recent_history": [
+          {
+            "step_id": 0,
+            "step_name": "(Job outcome)",
+            "outcome": "Failed",
+            "run_date": 20260917,
+            "run_time": 85454,
+            "message": "The job failed.  The Job was invoked by User SQLHOST01\\olddev.  The last step to run was step 2 (PullLegacy)."
+          },
+          {
+            "step_id": 2,
+            "step_name": "PullLegacy",
+            "outcome": "Failed",
+            "run_date": 20260917,
+            "run_time": 85454,
+            "message": "Executed as user: NT SERVICE\\SQLSERVERAGENT. Could not find stored procedure 'dbo.usp_PullLegacy'. [SQLSTATE 42000] (Error 2812).  The step failed."
+          },
+          {
+            "step_id": 1,
+            "step_name": "RunSummary",
+            "outcome": "Succeeded",
+            "run_date": 20260917,
+            "run_time": 85454,
+            "message": "Executed as user: NT SERVICE\\SQLSERVERAGENT. The step succeeded."
+          },
+          {
+            "step_id": 0,
+            "step_name": "(Job outcome)",
+            "outcome": "Failed",
+            "run_date": 20260917,
+            "run_time": 85419,
+            "message": "The job failed.  The Job was invoked by User SQLHOST01\\olddev.  The last step to run was step 2 (PullLegacy)."
+          },
+          {
+            "step_id": 2,
+            "step_name": "PullLegacy",
+            "outcome": "Failed",
+            "run_date": 20260917,
+            "run_time": 85420,
+            "message": "Executed as user: NT SERVICE\\SQLSERVERAGENT. Could not find stored procedure 'dbo.usp_PullLegacy'. [SQLSTATE 42000] (Error 2812).  The step failed."
+          },
+          {
+            "step_id": 1,
+            "step_name": "RunSummary",
+            "outcome": "Succeeded",
+            "run_date": 20260917,
+            "run_time": 85420,
+            "message": "Executed as user: NT SERVICE\\SQLSERVERAGENT. The step succeeded."
+          }
+        ]
+      }
+    },
+    {
+      "id": "step:OrphanTest_NightlyLoad#1",
+      "type": "agent_job_step",
+      "name": "OrphanTest_NightlyLoad / RunSummary",
+      "attrs": {
+        "subsystem": "TSQL",
+        "database_name": "OrphanTestDB",
+        "command": "EXEC dbo.usp_CustomerSummary;"
+      }
+    },
+    {
+      "id": "step:OrphanTest_NightlyLoad#2",
+      "type": "agent_job_step",
+      "name": "OrphanTest_NightlyLoad / PullLegacy",
+      "attrs": {
+        "subsystem": "TSQL",
+        "database_name": "OrphanTestDB",
+        "command": "EXEC dbo.usp_PullLegacy;"
+      }
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\loadcustomers.dtsx",
+      "type": "file",
+      "name": "LoadCustomers.dtsx",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\LoadCustomers.dtsx"
+      }
+    },
+    {
+      "id": "sqlserver:archive-sql",
+      "type": "sql_server_ref",
+      "name": "ARCHIVE-SQL",
+      "attrs": {}
+    },
+    {
+      "id": "db:LegacyDB",
+      "type": "database",
+      "name": "LegacyDB",
+      "attrs": {}
+    },
+    {
+      "id": "sqlserver:localhost",
+      "type": "sql_server_ref",
+      "name": "localhost",
+      "attrs": {}
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\maint.ps1",
+      "type": "file",
+      "name": "maint.ps1",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\maint.ps1"
+      }
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\refresh_customers.sql",
+      "type": "file",
+      "name": "refresh_customers.sql",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql"
+      }
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\salesreport.xlsx",
+      "type": "file",
+      "name": "SalesReport.xlsx",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\SalesReport.xlsx"
+      }
+    },
+    {
+      "id": "file:\\FILESERVER\\Legacy\\legacyshare\\reports\\customerreport.rdl",
+      "type": "file",
+      "name": "CustomerReport.rdl",
+      "attrs": {
+        "path": "\\FILESERVER\\Legacy\\LegacyShare\\reports\\CustomerReport.rdl"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "src": "server:SQLHOST01",
+      "dst": "db:OrphanTestDB",
+      "type": "HOSTS_DATABASE",
+      "source": {
+        "type": "catalog",
+        "object": "sys.databases",
+        "key": "database_id=5"
+      }
+    },
+    {
+      "src": "server:SQLHOST01",
+      "dst": "lnk:ARCHIVE-SQL",
+      "type": "HAS_LINKED_SERVER",
+      "source": {
+        "type": "catalog",
+        "object": "sys.servers",
+        "key": "name='ARCHIVE-SQL'"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.Customers",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=901578250"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.fnOrderCount",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=997578592"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.Orders",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=933578364"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=1013578649"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.usp_PullLegacy",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=1029578706"
+      }
+    },
+    {
+      "src": "db:OrphanTestDB",
+      "dst": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "type": "CONTAINS",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.objects",
+        "key": "object_id=981578535"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "dst": "obj:OrphanTestDB.dbo.Customers",
+      "type": "DEPENDS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.sql_expression_dependencies",
+        "key": "referencing_id=981578535",
+        "detail": "OrphanTestDB.dbo.Customers"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "dst": "obj:OrphanTestDB.dbo.Orders",
+      "type": "DEPENDS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.sql_expression_dependencies",
+        "key": "referencing_id=981578535",
+        "detail": "OrphanTestDB.dbo.Orders"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.fnOrderCount",
+      "dst": "obj:OrphanTestDB.dbo.Orders",
+      "type": "DEPENDS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.sql_expression_dependencies",
+        "key": "referencing_id=997578592",
+        "detail": "OrphanTestDB.dbo.Orders"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "dst": "obj:OrphanTestDB.dbo.fnOrderCount",
+      "type": "DEPENDS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.sql_expression_dependencies",
+        "key": "referencing_id=1013578649",
+        "detail": "OrphanTestDB.dbo.fnOrderCount"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "dst": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "type": "DEPENDS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "[OrphanTestDB].sys.sql_expression_dependencies",
+        "key": "referencing_id=1013578649",
+        "detail": "OrphanTestDB.dbo.vCustomerOrders"
+      }
+    },
+    {
+      "src": "obj:OrphanTestDB.dbo.usp_PullLegacy",
+      "dst": "lnk:ARCHIVE-SQL",
+      "type": "REFERENCES_LINKED_SERVER",
+      "source": {
+        "type": "module_line",
+        "object": "OrphanTestDB.dbo.usp_PullLegacy",
+        "line": 6,
+        "text": "DECLARE @sql NVARCHAR(400) = N'SELECT * FROM [ARCHIVE-SQL].[LegacyDB].[dbo].[ExternalCustomers]';"
+      }
+    },
+    {
+      "src": "server:SQLHOST01",
+      "dst": "job:OrphanTest_FileLoad",
+      "type": "HAS_JOB",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobs",
+        "key": "job_id=7601F29E-0B96-4448-8516-1C0F8710DB02"
+      }
+    },
+    {
+      "src": "job:OrphanTest_FileLoad",
+      "dst": "step:OrphanTest_FileLoad#1",
+      "type": "HAS_STEP",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=7601F29E-0B96-4448-8516-1C0F8710DB02, step_id=1"
+      }
+    },
+    {
+      "src": "step:OrphanTest_FileLoad#1",
+      "dst": "file:\\FILESERVER\\Legacy\\legacyshare\\nightly_load.bat",
+      "type": "INVOKES",
+      "source": {
+        "type": "jobstep",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=7601F29E-0B96-4448-8516-1C0F8710DB02, step_id=1",
+        "text": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat"
+      }
+    },
+    {
+      "src": "server:SQLHOST01",
+      "dst": "job:OrphanTest_NightlyLoad",
+      "type": "HAS_JOB",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobs",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE"
+      }
+    },
+    {
+      "src": "job:OrphanTest_NightlyLoad",
+      "dst": "step:OrphanTest_NightlyLoad#1",
+      "type": "HAS_STEP",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=1"
+      }
+    },
+    {
+      "src": "step:OrphanTest_NightlyLoad#1",
+      "dst": "db:OrphanTestDB",
+      "type": "RUNS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=1",
+        "detail": "database_name=OrphanTestDB"
+      }
+    },
+    {
+      "src": "step:OrphanTest_NightlyLoad#1",
+      "dst": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "type": "INVOKES",
+      "source": {
+        "type": "jobstep",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=1",
+        "text": "EXEC dbo.usp_CustomerSummary"
+      }
+    },
+    {
+      "src": "job:OrphanTest_NightlyLoad",
+      "dst": "step:OrphanTest_NightlyLoad#2",
+      "type": "HAS_STEP",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=2"
+      }
+    },
+    {
+      "src": "step:OrphanTest_NightlyLoad#2",
+      "dst": "db:OrphanTestDB",
+      "type": "RUNS_ON",
+      "source": {
+        "type": "catalog",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=2",
+        "detail": "database_name=OrphanTestDB"
+      }
+    },
+    {
+      "src": "step:OrphanTest_NightlyLoad#2",
+      "dst": "obj:OrphanTestDB.dbo.usp_PullLegacy",
+      "type": "INVOKES",
+      "source": {
+        "type": "jobstep",
+        "object": "msdb.dbo.sysjobsteps",
+        "key": "job_id=44ED6711-0E71-4E19-83D2-BFF3E30522DE, step_id=2",
+        "text": "EXEC dbo.usp_PullLegacy"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\loadcustomers.dtsx",
+      "dst": "sqlserver:archive-sql",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\LoadCustomers.dtsx",
+        "type": "file_xml",
+        "line": 9,
+        "text": "DTS:ConnectionString=\"Data Source=ARCHIVE-SQL;Initial Catalog=LegacyDB;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;\" />"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\loadcustomers.dtsx",
+      "dst": "db:LegacyDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\LoadCustomers.dtsx",
+        "type": "file_xml",
+        "line": 9,
+        "text": "DTS:ConnectionString=\"Data Source=ARCHIVE-SQL;Initial Catalog=LegacyDB;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;\" />"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\loadcustomers.dtsx",
+      "dst": "sqlserver:localhost",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\LoadCustomers.dtsx",
+        "type": "file_xml",
+        "line": 15,
+        "text": "DTS:ConnectionString=\"Data Source=localhost;Initial Catalog=OrphanTestDB;Provider=SQLNCLI11.1;Integrated Security=SSPI;\" />"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\loadcustomers.dtsx",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\LoadCustomers.dtsx",
+        "type": "file_xml",
+        "line": 15,
+        "text": "DTS:ConnectionString=\"Data Source=localhost;Initial Catalog=OrphanTestDB;Provider=SQLNCLI11.1;Integrated Security=SSPI;\" />"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\maint.ps1",
+      "dst": "sqlserver:localhost",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\maint.ps1",
+        "type": "file_line",
+        "line": 3,
+        "text": "$connStr = \"Server=localhost;Database=OrphanTestDB;Integrated Security=True;TrustServerCertificate=True\""
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\maint.ps1",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\maint.ps1",
+        "type": "file_line",
+        "line": 3,
+        "text": "$connStr = \"Server=localhost;Database=OrphanTestDB;Integrated Security=True;TrustServerCertificate=True\""
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\nightly_load.bat",
+      "dst": "sqlserver:localhost",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat",
+        "type": "file_line",
+        "line": 6,
+        "text": "sqlcmd -S localhost -d OrphanTestDB -E -i \"\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql\" -o \"D:\\logs\\refresh.log\""
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\nightly_load.bat",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat",
+        "type": "file_line",
+        "line": 6,
+        "text": "sqlcmd -S localhost -d OrphanTestDB -E -i \"\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql\" -o \"D:\\logs\\refresh.log\""
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\nightly_load.bat",
+      "dst": "file:\\FILESERVER\\Legacy\\legacyshare\\refresh_customers.sql",
+      "type": "REFERENCES",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\nightly_load.bat",
+        "type": "file_line",
+        "line": 6,
+        "text": "\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\refresh_customers.sql",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql",
+        "type": "file_line",
+        "line": 2,
+        "text": "USE OrphanTestDB;"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\refresh_customers.sql",
+      "dst": "obj:OrphanTestDB.dbo.usp_CustomerSummary",
+      "type": "REFERENCES_TABLE",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\refresh_customers.sql",
+        "type": "file_line",
+        "line": 4,
+        "text": "EXEC dbo.usp_CustomerSummary;"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\salesreport.xlsx",
+      "dst": "sqlserver:localhost",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\SalesReport.xlsx",
+        "type": "file_zip",
+        "part": "xl/connections.xml",
+        "text": "Provider=SQLOLEDB.1;Data Source=localhost;Initial Catalog=OrphanTestDB;Integrated Security=SSPI"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\salesreport.xlsx",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\SalesReport.xlsx",
+        "type": "file_zip",
+        "part": "xl/connections.xml",
+        "text": "Provider=SQLOLEDB.1;Data Source=localhost;Initial Catalog=OrphanTestDB;Integrated Security=SSPI"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\salesreport.xlsx",
+      "dst": "obj:OrphanTestDB.dbo.Customers",
+      "type": "REFERENCES_TABLE",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\SalesReport.xlsx",
+        "type": "file_zip",
+        "part": "xl/connections.xml",
+        "text": "SELECT * FROM dbo.Customers"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\reports\\customerreport.rdl",
+      "dst": "sqlserver:localhost",
+      "type": "REFERENCES_SERVER",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\reports\\CustomerReport.rdl",
+        "type": "file_xml",
+        "line": 7,
+        "text": "<ConnectString>Data Source=localhost;Initial Catalog=OrphanTestDB</ConnectString>"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\reports\\customerreport.rdl",
+      "dst": "db:OrphanTestDB",
+      "type": "CONNECTS_TO",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\reports\\CustomerReport.rdl",
+        "type": "file_xml",
+        "line": 7,
+        "text": "<ConnectString>Data Source=localhost;Initial Catalog=OrphanTestDB</ConnectString>"
+      }
+    },
+    {
+      "src": "file:\\FILESERVER\\Legacy\\legacyshare\\reports\\customerreport.rdl",
+      "dst": "obj:OrphanTestDB.dbo.vCustomerOrders",
+      "type": "REFERENCES_TABLE",
+      "source": {
+        "object": "\\FILESERVER\\Legacy\\LegacyShare\\reports\\CustomerReport.rdl",
+        "type": "file_xml",
+        "text": "FROM dbo.vCustomerOrders"
+      }
+    }
+  ]
+}

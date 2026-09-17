@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# Generated output (raw captures may contain machine/user identifiers)
+output/
+
+# Local environment setup, install logs, and the live fixture (contain absolute
+# paths, machine name, and account names for THIS box). Sanitize before publishing.
+setup/
+fixture_files/
+
+# GUI/tool state
+*.state.json
