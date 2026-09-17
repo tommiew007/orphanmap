@@ -40,9 +40,9 @@ Be suspicious of tools that don't tell you this. "Fixture only" means run agains
 | `.dtsx` (SSIS connection managers) | ✅ | | ✅ |
 | `.rdl` (SSRS data sources) | ✅ | | ✅ |
 | `.xlsx` / `.xlsm` (external-data connections) | ✅ | | ✅ |
-| `.accdb` / `.mdb` (embedded ODBC connect strings) | ✅ | | ⚠️ **synthetic bytes only — not yet run against a genuine Access file** |
+| `.accdb` / `.mdb` (embedded ODBC connect strings) | ✅ | reads real files | ⚠️ extraction on synthetic bytes |
 
-The `.accdb` scanner is a raw byte read (ASCII + UTF-16LE) and needs **zero** Access components installed, but it has only been validated against constructed byte samples, not a real database. Treat it as unproven on real files until you've run it on one.
+The `.accdb` scanner is a raw byte read (ASCII + UTF-16LE) and needs **zero** Access components installed. It has been run against genuine Access databases (e.g. the classic Northwind/BIBLIO `.mdb` files) and reads them cleanly with no false positives — but those have no external connections, so the part that *extracts* an embedded SQL connect string is so far proven only on constructed byte samples, not yet on a real Access DB that links out to SQL Server. Treat that extraction path as unproven on real files until you've run it on one.
 
 ## Quick start
 
