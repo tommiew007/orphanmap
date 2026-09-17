@@ -12,3 +12,10 @@ fixture_files/
 
 # GUI/tool state
 *.state.json
+
+# Launch drafts / internal notes — keep in the working tree, never publish
+docs/
+
+# Marketing landing page (orphanmap.com) + email-capture function — deployed
+# separately to its own Cloudflare Pages project, kept out of the OSS repo
+site/
