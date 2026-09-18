@@ -44,6 +44,13 @@ Be suspicious of tools that don't tell you this. "Fixture only" means run agains
 
 The `.accdb` scanner is a raw byte read (ASCII + UTF-16LE) and needs **zero** Access components installed. It has been run against genuine Access databases (e.g. the classic Northwind/BIBLIO `.mdb` files) and reads them cleanly with no false positives — but those have no external connections, so the part that *extracts* an embedded SQL connect string is so far proven only on constructed byte samples, not yet on a real Access DB that links out to SQL Server. Treat that extraction path as unproven on real files until you've run it on one.
 
+## Prerequisites
+
+- **Windows** with **Python 3.9+** on PATH (`python --version`).
+- **Microsoft ODBC Driver 18 for SQL Server**, a separate Microsoft download, not installed by default. Without it the run fails with a "driver not found" error even though `pip install pyodbc` succeeded. Get it here: https://learn.microsoft.com/sql/connect/odbc/download-odbc-driver-for-sql-server
+- A Windows login with **read access** to the target's catalog views and `msdb` (the tool only ever SELECTs).
+- Optional: **Graphviz** on PATH for `--render` to also emit an SVG (it writes a `.dot` either way).
+
 ## Quick start
 
 ```
@@ -54,6 +61,8 @@ python collector/collect.py --server localhost --scan-dir "C:\SomeShare" --out o
 Useful flags: `--skip-sql`, `--skip-tasks`, `--scan-dir <path>` (enables the file phase), `--include-system` (keep system DBs + Microsoft Agent jobs), `--include-microsoft` (keep Microsoft scheduled tasks), `--render` (also write DOT, plus SVG if Graphviz is installed).
 
 Connection uses Windows authentication and the `ODBC Driver 18 for SQL Server` by default (`--driver` to change).
+
+If no SQL Server is reachable at `--server` (or the driver is missing), the SQL phase prints a one-line notice and is skipped, the Task Scheduler and file-scan phases still run and still produce a graph. Pass `--skip-sql` to skip the SQL phase deliberately.
 
 ## Output
 

@@ -48,7 +48,17 @@ def main(argv: Optional[List[str]] = None) -> int:
             run_phase1(g, server=args.server, driver=args.driver, databases=args.databases,
                        history_limit=args.history_limit, include_system=args.include_system)
         except Exception as e:
-            print(f"[phase1] ERROR (continuing): {e}")
+            sqlstate = e.args[0] if getattr(e, "args", None) else ""
+            if sqlstate in ("08001", "08S01", "HYT00", "HYT01"):
+                print(f"[phase1] No SQL Server reachable at '{args.server}'. Skipping the SQL phase; "
+                      f"the other phases still run. Point at a live instance with --server, "
+                      f"or pass --skip-sql to skip it on purpose.")
+            elif sqlstate == "IM002":
+                print(f"[phase1] ODBC driver '{args.driver}' is not installed. Install the Microsoft "
+                      f"ODBC Driver 18 for SQL Server (see the README), or pass --driver with a driver "
+                      f"you have. Skipping the SQL phase.")
+            else:
+                print(f"[phase1] ERROR (continuing): {e}")
 
     if not args.skip_tasks:
         try:
