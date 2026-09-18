@@ -80,4 +80,8 @@ Proof of concept. Phases 1–3 run and were validated against a live SQL Server 
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Set the copyright holder before publishing.
+MIT, see [LICENSE](LICENSE). Copyright Tom Wellborn.
+
+## About the author
+
+I'm Tom Wellborn, a SQL data engineer. I've spent twenty-plus years building and inheriting SQL Server data platforms, ETL pipelines, and warehouses in pharma, hospital systems, and imaging, and most of what I know about undocumented environments I learned by being handed one. orphanmap is the tool I wanted every time.
